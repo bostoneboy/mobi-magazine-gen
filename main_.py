@@ -89,13 +89,13 @@ def main():
     RSSparse.writeDatabase(database,list_today)
     
     weekday = time.strftime("%w", time.localtime())
-    if not weekday == run_weekday:
+    if weekday != run_weekday:
       continue
     else:
       pass
     
     # RSS compare and compare for this week and last week.
-    unixtime_lastweek = time.time() - (3600 * 12 * 7)
+    unixtime_lastweek = time.time() - (3600 * 24 * 7)
     date_lastweek = time.strftime("%Y%W", time.localtime(unixtime_lastweek))
     database_lastweek = title + "-" + date_lastweek + ".db"
     database_lastweek = os.path.join(database_dir,database_lastweek)
