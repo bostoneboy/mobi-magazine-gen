@@ -1,5 +1,5 @@
 #!/bin/bash
-# install amazon's offical kindlegen tool.
+# download and install amazon's offical kindlegen tool.
 # KindleGen Download Page: http://www.amazon.com/gp/feature.html?ie=UTF8&docId=1000234621
 # make sure you can run this script in root privileges or sudo!!!
 
@@ -9,7 +9,7 @@ tar xvf kindlegen_linux_*.tar.gz
 mv kindlegen /usr/bin
 if [ $? -eq 0 ]
 then
-  echo "\n**********kindlegen installed successful."
+  echo "**********kindlegen installed successful."
 else
-  echo "\n**********Something error occured, be sure you are root user or in sudo mode!"
+  echo "**********Something error occured, be sure you are root user or in sudo mode!"
 fi
