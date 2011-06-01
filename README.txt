@@ -8,3 +8,5 @@ Config:
 modify the config file: config.cfg
 change the directory on SYSTEM section.
 change the "run weekday" for your need.
+
+待完成...
