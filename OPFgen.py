@@ -114,8 +114,9 @@ def opfSpine(list_index):
   return spentire
 
 def opfGuide():
-  guide_line = '<reference type="toc" title="content_index" href="0.html"></reference>'
-  guide_line = "<guide>" + "\n" + guide_line + "\n" + "</guide>" + "\n"
+  guide_line1 = '<reference type="text" title="welcome" href="0.html"></reference>'
+  guide_line2 = '<reference type="toc" title="content_index" href="0.html"></reference>'
+  guide_line = "<guide>" + "\n" + guide_line1 + "\n" + guide_line2 + "\n" + "</guide>" + "\n"
   return guide_line
   
 def opfFooter():
