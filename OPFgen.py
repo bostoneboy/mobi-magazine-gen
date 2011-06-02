@@ -120,8 +120,7 @@ def opfGuide():
   return guide_line
   
 def opfFooter():
-  foot = "<guild/>\n"
-  foot += "</package>\n"
+  foot = "</package>\n"
   return foot
 
 ######################################
