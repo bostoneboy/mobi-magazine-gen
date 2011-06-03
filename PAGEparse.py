@@ -25,21 +25,23 @@ def pageFormat_nfzm(content,pageparse_keyword):
   page = page_head + page_body
   return page
 
-def downloadIMG(content):
+def downloadIMG(content,title):
   img_uri_prefix = randomString(6)
-  img_tab = re.findall(r'<img[\s\S]+?>',content)
+  img_tab = re.findall(r'<img[\s\S]*?src="(\S+)?"',content)
   for list in img_tab:
-    keyword = re.compile(r'"(http://\S+\.\S+)"')
-    result = keyword.search(list)
-    if result:
-      img_url = result.group(1)
+    if re.search(r"nbweekly",title):
+      base_url = "http://www.nbweekly.com"
+      img_url = base_url + list
     else:
-      break
+      img_url = list
     img_prefix = randomString(6)
-    img_filename = img_prefix + "-" + re.search(r'/([\w_-]+\.[\w_-]+)$',img_url).group(1)
-    img_filename = img_filename
-    urllib.urlretrieve(img_url,img_filename)
-    content = re.sub(img_url,img_filename,content)
+    img_filename = img_prefix + re.search(r'(.[\w_-]+)$',img_url).group(1)
+    try:
+      urllib.urlretrieve(img_url,img_filename)
+    except:
+      print "cannot retrieve image on the server: %s" % img_url
+      img_filename = ""
+    content = re.sub(list,img_filename,content)
   return content
 
 def htmlHeader():

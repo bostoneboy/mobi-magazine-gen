@@ -26,9 +26,9 @@ def fetchList(content,findall_key,find_key):
     date  = i.find(find_key[0]).text
     link  = i.find(find_key[1]).text
     title = i.find(find_key[2]).text.encode("utf-8")
-    description = i.find(find_key[3]).text.encode("utf-8")
+    # description = i.find(find_key[3]).text.encode("utf-8")
     title = SubCR(title)
-    line = [date,link,title,description]
+    line = [date,link,title]
     list_today.append(line)
   list_today.sort()
   return list_today

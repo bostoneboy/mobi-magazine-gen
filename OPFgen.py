@@ -50,7 +50,7 @@ def opfMetadata(item,config_file):
   pageparse_keyword  = config.get(item,"pageparse keyword")
 
   date      = time.strftime("%Y-%m-%d", time.gmtime())
-  date_week = time.strftime("%W", time.gmtime())
+  date_week = time.strftime("%Y%W", time.gmtime())
   title     = title + "-" + date_week
   find_key  = find_key.split(",")
 

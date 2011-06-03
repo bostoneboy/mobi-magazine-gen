@@ -115,13 +115,13 @@ def main():
     list_index = RSSparse.resolvetoList(database)
     index = 1
     for i in list_index:
-      if re.search(r"nbweekly",title):
-        temp_head = "<h1>%s</h1>\n" % i[2]
-        page = temp_head + i[3]
-      else:
-        html_content = RSSparse.fetchHtml(i[1])
-        page = PAGEparse.pageFormat_nfzm(html_content,pageparse_keyword)
-      page_downloadimg = PAGEparse.downloadIMG(page)
+      # if re.search(r"nbweekly",title):
+      #   temp_head = "<h1>%s</h1>\n" % i[2]
+      #   page = temp_head + i[3]
+      # else:
+      html_content = RSSparse.fetchHtml(i[1])
+      page = PAGEparse.pageFormat_nfzm(html_content,pageparse_keyword)
+      page_downloadimg = PAGEparse.downloadIMG(page,title)
       page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
       page_entire = PAGEparse.htmlHeader() + page_addbodytag
       out_filename = str(index) + ".html"
@@ -159,6 +159,8 @@ def main():
     # genaration the .mobi file use system tool kindlegen
     opf_file = "index.opf"
     mobi_file = title2 + ".mobi"
+    if os.path.isfile(os.path.join(mobi_dir,mobi_file)):
+      mobi_file = title2 + "-" + randomString(6) + ".mobi"
     kindleGen(opf_file,mobi_file)
     move(mobi_file,mobi_dir)
 
