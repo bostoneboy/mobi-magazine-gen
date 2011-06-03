@@ -1,7 +1,7 @@
 ﻿Useage:
 1. install kindlegen which is amazon's offical mobi generate tool from running the scrip : install_kindlegen.sh
 2. add main_.py to you server's crontab, run it once a day. for example:
-     14 * * * * /home/user/mobi-magazine-gen/main_.py
+     00 14 * * * /home/user/mobi-magazine-gen/main_.py
      run the program at 2:00 pm erveryday.
      
 Config:
