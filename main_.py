@@ -79,6 +79,12 @@ def main():
     database = title2 + ".db"
     database = os.path.join(database_dir,database)
 
+    # generate the url of this week's nfpeople
+    if re.search(r'nfpeople',title):
+      uri = str(int(time.strftime("%W", time.localtime())) + 7)
+      uri = "Magazine-detail-item-" + uri + ".html"
+      url += uri
+    
     # RSS parse and compare for today and yestoday
     content = RSSparse.fetchHtml(url)
     if re.search(r'nfpeople',url):
