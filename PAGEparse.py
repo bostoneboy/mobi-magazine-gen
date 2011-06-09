@@ -17,7 +17,7 @@ def writeHtml(filename,page_content):
   action.write(page_content)
   action.close()
 
-def pageFormat_nfzm(content,pageparse_keyword):
+def pageFormat(content,pageparse_keyword):
   keyword = re.compile(pageparse_keyword,re.IGNORECASE)
   result = keyword.search(content)
   page_head = result.group(1)
@@ -31,6 +31,9 @@ def downloadIMG(content,title):
   for list in img_tab:
     if re.search(r"nbweekly",title):
       base_url = "http://www.nbweekly.com"
+      img_url = base_url + list
+    elif re.search(r"nfpeople",title):
+      base_url = "http://www.nfpeople.com"
       img_url = base_url + list
     else:
       img_url = list

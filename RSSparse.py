@@ -32,6 +32,21 @@ def fetchList(content,findall_key,find_key):
     list_today.append(line)
   list_today.sort()
   return list_today
+  
+def fetchListNFpeople(content):
+  item_origin = re.findall(r'<h3><a\starget="_blank"\shref=[\s\S]+?</h3>',content)
+  number = 0
+  list_today = []
+  link_prefix = "http://www.nfpeople.com"
+  keyword = re.compile(r'<h3><a\starget="_blank"\shref="(\S+)?">(.*)</a></h3>',re.IGNORECASE)
+  for i in item_origin:
+    link = link_prefix + keyword.search(i).group(1)
+    title = keyword.search(i).group(2)
+    number += 1
+    date = str(number)
+    line = [date,link,title]
+    list_today.append(line)
+  return list_today
 
 def writeDatabase(database,llist):
   action = open(database,"w")

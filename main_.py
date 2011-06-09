@@ -38,22 +38,21 @@ def main():
   config = ConfigParser()
   config.read(config_file)
   
-  base_dir = config.get("SYSTEM","base directory")
-  mobi_dir = config.get("SYSTEM","mobi directory")
-  run_weekday = config.get("SYSTEM","run weekday")
+  base_dir     = config.get("SYSTEM","base directory")
+  mobi_dir     = config.get("SYSTEM","mobi directory")
+  run_weekday  = config.get("SYSTEM","run weekday")
   database_dir = config.get("SYSTEM","temp directory")
-  config_file = os.path.join(base_dir,"config.cfg")
+  config_file  = os.path.join(base_dir,"config.cfg")
   
   makeDir(database_dir)
   makeDir(mobi_dir)
   
   config_list = config.sections()
-  rss_list = [i for i in config_list if re.search(r"RSS",i)]
+  rss_list    = [i for i in config_list if re.search(r"RSS",i)]
   for item in rss_list:
     title        = config.get(item,"title")
     creator      = config.get(item,"creator")
     publisher    = config.get(item,"publisher")
-    date         = config.get(item,"date")
     source       = config.get(item,"source")
     rights       = config.get(item,"rights")
     subject      = config.get(item,"subject")
@@ -76,13 +75,16 @@ def main():
     find_key  = find_key.split(",")
     bookid    = randomString(12)
     
-    title2 = title + "-" + date_week
+    title2   = title + "-" + date_week
     database = title2 + ".db"
     database = os.path.join(database_dir,database)
 
     # RSS parse and compare for today and yestoday
     content = RSSparse.fetchHtml(url)
-    list_today = RSSparse.fetchList(content,findall_key,find_key)
+    if re.search(r'nfpeople',url):
+      list_today = RSSparse.fetchListNFpeople(content)
+    else:
+      list_today = RSSparse.fetchList(content,findall_key,find_key)
     if os.path.isfile(database):
       list_yesterday = RSSparse.resolvetoList(database)
       list_today = RSSparse.compareListday(list_today,list_yesterday)
@@ -120,7 +122,7 @@ def main():
       #   page = temp_head + i[3]
       # else:
       html_content = RSSparse.fetchHtml(i[1])
-      page = PAGEparse.pageFormat_nfzm(html_content,pageparse_keyword)
+      page = PAGEparse.pageFormat(html_content,pageparse_keyword)
       page_downloadimg = PAGEparse.downloadIMG(page,title)
       page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
       page_entire = PAGEparse.htmlHeader() + page_addbodytag

@@ -31,7 +31,6 @@ def opfMetadata(item,config_file):
   title        = config.get(item,"title")
   creator      = config.get(item,"creator")
   publisher    = config.get(item,"publisher")
-  date         = config.get(item,"date")
   source       = config.get(item,"source")
   rights       = config.get(item,"rights")
   subject      = config.get(item,"subject")
