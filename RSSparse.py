@@ -35,7 +35,7 @@ def fetchList(content,findall_key,find_key):
   
 def fetchListNFpeople(content):
   item_origin = re.findall(r'<h3><a\starget="_blank"\shref=[\s\S]+?</h3>',content)
-  number = 0
+  number = 1000
   list_today = []
   link_prefix = "http://www.nfpeople.com"
   keyword = re.compile(r'<h3><a\starget="_blank"\shref="(\S+)?">(.*)</a></h3>',re.IGNORECASE)

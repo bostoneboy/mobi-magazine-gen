@@ -24,6 +24,19 @@ def pageFormat(content,pageparse_keyword):
   page_body = result.group(2)
   page = page_head + page_body
   return page
+  
+def pageFormatNFpeople(content):
+  keyword1 = re.compile(r'<span[\s\S]*?>',re.IGNORECASE)      # delete the begin span mark
+  keyword2 = re.compile(r'</span>',re.IGNORECASE)             # delete the end span mark
+  keyword3 = re.compile(r'<p\sstyle=[\s\S]*?>',re.IGNORECASE) # sub to <p>
+  keyword4 = re.compile(r'<p>(&nbsp;){2,}',re.IGNORECASE)        # delete the &nbsp; marks followed <p>
+  keyword5 = re.compile(r'(<p>&nbsp;</p>\s*)+',re.IGNORECASE)
+  content = keyword1.sub('',content)
+  content = keyword2.sub('',content)
+  content = keyword3.sub('<p>',content)
+  content = keyword4.sub('<p>',content)
+  content = keyword5.sub('<p>&nbsp;</p>\n',content)
+  return content
 
 def downloadIMG(content,title):
   img_uri_prefix = randomString(6)

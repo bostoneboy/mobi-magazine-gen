@@ -123,6 +123,8 @@ def main():
       # else:
       html_content = RSSparse.fetchHtml(i[1])
       page = PAGEparse.pageFormat(html_content,pageparse_keyword)
+      if re.search(r'nfpeople',title):
+        page = PAGEparse.pageFormatNFpeople(page)
       page_downloadimg = PAGEparse.downloadIMG(page,title)
       page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
       page_entire = PAGEparse.htmlHeader() + page_addbodytag
