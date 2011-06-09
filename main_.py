@@ -27,6 +27,11 @@ def makeDir(directory):
   else:
     pass
     
+def mailSend(mail_from,mail_to,attachment):
+  subject = "mobi-magazine-gen: " + attachment
+  command = " ".join(["mail","-s",subject,"-a",attachment,"-r",mail_from,mail_to])
+  os.system(command)
+  
 def kindleGen(opf_file,mobi_file):
   param = " -c1 -verbose -o "
   command = "kindlegen " + opf_file + param + mobi_file
@@ -38,6 +43,8 @@ def main():
   config = ConfigParser()
   config.read(config_file)
   
+  mail_from    = config.get("SYSTEM","mail from")
+  mail_to      = config.get("SYSTEM","mail to")
   base_dir     = config.get("SYSTEM","base directory")
   mobi_dir     = config.get("SYSTEM","mobi directory")
   run_weekday  = config.get("SYSTEM","run weekday")
@@ -173,6 +180,10 @@ def main():
       mobi_file = title2 + "-" + randomString(6) + ".mobi"
     kindleGen(opf_file,mobi_file)
     move(mobi_file,mobi_dir)
+    
+    # mail mobi book as attachment to specified mail address.
+    attachement = mobi_dir + mobi_file
+    sendMail(mail_from,mail_to,attachement)
 
 if __name__ == "__main__":
   main()
