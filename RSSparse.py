@@ -38,14 +38,16 @@ def fetchListNFpeople(content):
   number = 1000
   list_today = []
   link_prefix = "http://www.nfpeople.com"
-  keyword = re.compile(r'<h3><a\starget="_blank"\shref="(\S+)?">(.*)</a></h3>',re.IGNORECASE)
+  keyword = re.compile(r'<h3><a\starget="_blank"\shref="(\S+\d+\.html)?">(.*)</a></h3>',re.IGNORECASE)
   for i in item_origin:
-    link = link_prefix + keyword.search(i).group(1)
-    title = keyword.search(i).group(2)
-    number += 1
-    date = str(number)
-    line = [date,link,title]
-    list_today.append(line)
+    result = keyword.search(i)
+    if result:
+      link = link_prefix + result.group(1)
+      title = keyword.search(i).group(2)
+      number += 1
+      date = str(number)
+      line = [date,link,title]
+      list_today.append(line)
   return list_today
 
 def writeDatabase(database,llist):

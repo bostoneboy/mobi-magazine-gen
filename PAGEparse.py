@@ -16,26 +16,31 @@ def writeHtml(filename,page_content):
   action = open(filename,"w")
   action.write(page_content)
   action.close()
+  
+def pagechapterBlank():
+  return "<p>&nbsp;</p>"
 
 def pageFormat(content,pageparse_keyword):
   keyword = re.compile(pageparse_keyword,re.IGNORECASE)
   result = keyword.search(content)
   page_head = result.group(1)
   page_body = result.group(2)
-  page = page_head + page_body
+  page = page_head + pagechapterBlank() + page_body
   return page
   
 def pageFormatNFpeople(content):
-  keyword1 = re.compile(r'<span[\s\S]*?>',re.IGNORECASE)      # delete the begin span mark
-  keyword2 = re.compile(r'</span>',re.IGNORECASE)             # delete the end span mark
-  keyword3 = re.compile(r'<p\sstyle=[\s\S]*?>',re.IGNORECASE) # sub to <p>
+  keyword1 = re.compile(r'<span[\s\S]*?>',re.IGNORECASE)         # delete the begin span mark
+  keyword2 = re.compile(r'</span>',re.IGNORECASE)                # delete the end span mark
+  keyword3 = re.compile(r'<p\sstyle=[\s\S]*?>',re.IGNORECASE)    # sub to <p>
   keyword4 = re.compile(r'<p>(&nbsp;){2,}',re.IGNORECASE)        # delete the &nbsp; marks followed <p>
   keyword5 = re.compile(r'(<p>&nbsp;</p>\s*)+',re.IGNORECASE)
+  keyword6 = re.compile(r'(<p><p>&nbsp;</p>)+',re.IGNORECASE)
   content = keyword1.sub('',content)
   content = keyword2.sub('',content)
   content = keyword3.sub('<p>',content)
   content = keyword4.sub('<p>',content)
   content = keyword5.sub('<p>&nbsp;</p>\n',content)
+  content = keyword6.sub('',content)
   return content
 
 def downloadIMG(content,title):

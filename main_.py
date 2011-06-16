@@ -5,6 +5,7 @@ import os
 import re
 import time
 import random
+import platform
 from shutil import move
 from ConfigParser import ConfigParser
 
@@ -183,8 +184,10 @@ def main():
     move(mobi_file,mobi_dir)
     
     # mail mobi book as attachment to specified mail address.
-    os.chdir(mobi_dir)
-    mailSend(mail_from,mail_to,mobi_file)
+    os_type = platform.system() 
+    if os_type == "Linux":
+      os.chdir(mobi_dir)
+      mailSend(mail_from,mail_to,mobi_file)
 
 if __name__ == "__main__":
   main()
