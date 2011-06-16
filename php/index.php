@@ -31,34 +31,45 @@ function format_bytes($bytes) {
    if ($bytes < 1024) return $bytes.' B';
    elseif ($bytes < 1048576) return round($bytes / 1024, 2).' KB';
    elseif ($bytes < 1073741824) return round($bytes / 1048576, 2).' MB';
-} 
+}
 
-$dir = '../mobi/';
+$dir = './';
 if ($handle = opendir($dir)){
-  $files = array();
+  $line = array();
+  $line_sub = array();
   while (false !== ($file = readdir($handle))){
-    $files[] = $file; 
+    $file_path_1 = $dir.$file;
+    if ($result = ereg("\.mobi$",$file)){
+      unset($line_sub);
+      $ctime = filemtime($file_path_1);
+      if (array_key_exists($ctime,$line))
+        $ctime += 1;
+      $csize = format_bytes(filesize($file_path_1));
+      $line_sub[] = $file;
+      $line_sub[] = $csize;
+      $line[$ctime] = $line_sub;
+    }
   }
   closedir($handle);
-  foreach($files as $i){
-    if ($result = ereg("mobi$",$i)){
-      $file_path = $dir.$i;
-      $ctime = date ("m/d/Y", filemtime($file_path));
-      $csize = format_bytes(filesize($file_path));
-      print "\n".'<tr><td valign="top"><img src="icon.png" alt="[   ]"></td>';
-      print '<td><a href="'.$file_path.'">'.$i.'</a></td>';
-      print '<td align="right">'.$ctime.'</td>';
-      print '<td align="right">'.$csize.'</td>';
-      print '<td>&nbsp;</td></tr> ';
-    }
+
+  krsort($line);
+  foreach($line as $key => $value){
+    $filename = $value[0];
+    $file_path_2 = $dir.$filename;
+    $display_time = date ("m/d/Y", $key);
+    $filesize = $value[1];
+    print "\n".'<tr><td valign="top"><img src="icon.png" alt="[   ]"></td>';
+    print '<td><a href="'.$file_path_2.'">'.$filename.'</a></td>';
+    print '<td align="right">'.$display_time.'</td>';
+    print '<td align="right">'.$filesize.'</td>';
+    print '<td>&nbsp;</td></tr> ';
   }
 }
 ?>
 
-
 <tr><th colspan="5"><hr></th></tr> 
 </table> 
-<address> Powered by Pagebrin.com & 
+<address> Powered by pagebrin.com & 
   <a href="http://twitter.com/#!/Bill_JaJa" target="_blank">@Bill_JaJa</a>
 </address> 
 
