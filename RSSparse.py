@@ -52,7 +52,7 @@ def fetchListNFpeople(content):
 def writeDB(collection,doc):
   db = Connection().test
   post = db[collection]
-  if not post.find({'link':doc['link']}):
+  if not post.find({'link':doc['link']}).count():
     is_operate = 'no'
     insert_time = time.time()
     b = {'is_operate':is_operate,'insert_time':insert_time}
@@ -68,6 +68,5 @@ def updateDB(collection,url):
 def queryDB(collection):
   db = Connection().test
   post = db[collection]
-  result = list(post.find({'is_operate':'no'})).sort({'date':1})
+  result = list(post.find({'is_operate':'no'}).sort('date'))
   return result
-
