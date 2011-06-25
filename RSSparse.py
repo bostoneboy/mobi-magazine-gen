@@ -1,11 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import re
+import time
 import random
 import urllib
-import os.path
 from xml.etree import ElementTree
+from pymongo import Connection 
 
 def fetchHtml(url):
   action = urllib.urlopen(url)
@@ -26,16 +26,14 @@ def fetchList(content,findall_key,find_key):
     date  = i.find(find_key[0]).text
     link  = i.find(find_key[1]).text
     title = i.find(find_key[2]).text.encode("utf-8")
-    # description = i.find(find_key[3]).text.encode("utf-8")
     title = SubCR(title)
-    line = [date,link,title]
-    list_today.append(line)
-  list_today.sort()
+    doc = {'date':date,'link':link,'title':title}
+    list_today.append(doc)
   return list_today
   
 def fetchListNFpeople(content):
   item_origin = re.findall(r'<h3><a\starget="_blank"\shref=[\s\S]+?</h3>',content)
-  number = 1000
+  number = int(time.time())
   list_today = []
   link_prefix = "http://www.nfpeople.com"
   keyword = re.compile(r'<h3><a\starget="_blank"\shref="(\S+\d+\.html)?">(.*)</a></h3>',re.IGNORECASE)
@@ -46,34 +44,30 @@ def fetchListNFpeople(content):
       title = keyword.search(i).group(2)
       number += 1
       date = str(number)
-      line = [date,link,title]
-      list_today.append(line)
+      insert_time = time.time()
+      doc = {'date':date,'link':link,'title':title}
+      list_today.append(doc)
   return list_today
 
-def writeDatabase(database,llist):
-  action = open(database,"w")
-  page = "EOFhc2fheEOF\n".join(["|||".join(n) for n in llist])
-  action.write(page)
-  action.close()
-
-# resolve the database file to list.
-def resolvetoList(database):
-  action = open(database,"r")
-  content = action.read()
-  action.close()
-  list_yesterday = [m.split("|||") for m in content.split("EOFhc2fheEOF\n")]
-  return list_yesterday
-
-def compareListday(list1,list2):
-  lllist = list1[:]
-  b = [ a[1] for a in list1 ]
-  for c in list2:
-    if not (c[1] in b):
-      lllist.append(c)
-  lllist.sort()
-  return lllist
+def writeDB(collection,doc):
+  db = Connection().test
+  post = db[collection]
+  if not post.find({'link':doc['link']}):
+    is_operate = 'no'
+    insert_time = time.time()
+    b = {'is_operate':is_operate,'insert_time':insert_time}
+    doc.update(b)
+    post.insert(doc)
  
-def compareListweek(list_thisweek,list_lastweek):
-  url_lastweek = [i[1] for i in list_lastweek]
-  list_new = [m for m in list_thisweek if not (m[1] in url_lastweek)]
-  return list_new
+def updateDB(collection,url):
+  db = Connection().test
+  post = db[collection]
+  fetchhtml_time = time.time()
+  post.update({'link':url},{'$set':{'is_operate':'yes','fetchhtml_time':fetchhtml_time}})
+
+def queryDB(collection):
+  db = Connection().test
+  post = db[collection]
+  result = list(post.find({'is_operate':'no'})).sort({'date':1})
+  return result
+

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import os
 import re
@@ -54,10 +53,8 @@ def main():
   base_dir     = config.get("SYSTEM","base directory")
   mobi_dir     = config.get("SYSTEM","mobi directory")
   publ_dir     = config.get("SYSTEM","publish directory")
-  database_dir = config.get("SYSTEM","temp directory")
   config_file  = os.path.join(base_dir,"config.cfg")
   
-  makeDir(database_dir)
   makeDir(mobi_dir)
   
   config_list = config.sections()
@@ -90,8 +87,6 @@ def main():
     bookid    = randomString(12)
     
     title2   = title + "-" + date_week
-    database = title2 + ".db"
-    database = os.path.join(database_dir,database)
 
     # generate the url of this week's nfpeople
     if re.search(r'nfpeople',title):
@@ -99,16 +94,15 @@ def main():
       uri = "Magazine-detail-item-" + uri + ".html"
       url += uri
     
+    collection = "rss_" + title
     # RSS parse and compare for today and yestoday
     content = RSSparse.fetchHtml(url)
     if re.search(r'nfpeople',url):
       list_today = RSSparse.fetchListNFpeople(content)
     else:
       list_today = RSSparse.fetchList(content,findall_key,find_key)
-    if os.path.isfile(database):
-      list_yesterday = RSSparse.resolvetoList(database)
-      list_today = RSSparse.compareListday(list_today,list_yesterday)
-    RSSparse.writeDatabase(database,list_today)
+    for i in list_today:
+      RSSparse.writeDB(collection,i)
     
     weekday = time.strftime("%w", time.localtime())
     if weekday != handle_weekday:
@@ -116,32 +110,15 @@ def main():
     else:
       pass
     
-    # RSS compare and compare for this week and last week.
-    unixtime_lastweek = time.time() - (3600 * 24 * 7)
-    date_lastweek = time.strftime("%Y%W", time.localtime(unixtime_lastweek))
-    database_lastweek = title + "-" + date_lastweek + ".db"
-    database_lastweek = os.path.join(database_dir,database_lastweek)
-    if os.path.isfile(database_lastweek):
-      list_lastweek = RSSparse.resolvetoList(database_lastweek)
-      list_thisweek = RSSparse.resolvetoList(database)
-      list_now = RSSparse.compareListweek(list_thisweek,list_lastweek)
-      RSSparse.writeDatabase(database,list_now)
-    else:
-      pass
-      
     temp_dir = os.path.join(config.get("SYSTEM","temp directory"),str(int(time.time())))
     makeDir(temp_dir)
     os.chdir(temp_dir)
     
     # PAGE parse
-    list_index = RSSparse.resolvetoList(database)
+    list_index = RSSparse.queryDB(collection)
     index = 1
     for i in list_index:
-      # if re.search(r"nbweekly",title):
-      #   temp_head = "<h1>%s</h1>\n" % i[2]
-      #   page = temp_head + i[3]
-      # else:
-      html_content = RSSparse.fetchHtml(i[1])
+      html_content = RSSparse.fetchHtml(i['link'])
       page = PAGEparse.pageFormat(html_content,pageparse_keyword)
       if re.search(r'nfpeople',title):
         page = PAGEparse.pageFormatNFpeople(page)
@@ -152,6 +129,8 @@ def main():
       #out_filename = temp_dir + out_filename
       PAGEparse.writeHtml(out_filename,page_entire)
       index += 1
+      # update database's is_operate name.
+      RSSparse.updateDB(collection,i['link'])
 
     # OPF generation
     opf_metadata = OPFgen.opfMetadata(item,config_file)

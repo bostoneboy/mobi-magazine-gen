@@ -141,7 +141,7 @@ def htmlBody(list_index):
   body = ""
   for item in list_index:
     line1 = "%d. " % init_id
-    line2 = '<a href="%d.html">%s</a><br/>' % (init_id,item[2])
+    line2 = '<a href="%d.html">%s</a><br/>' % (init_id,item['title'].encode('utf-8'))
     line = line1 + line2
     body += line
     init_id += 1
@@ -194,7 +194,7 @@ def ncxEntireNavPoint(list_index):
     page_id = str(init_id)
     play_order = init_id + 1       
     page_src = page_id + ".html"
-    page_title = item[2]
+    page_title = item['title'].encode('utf-8')
     nav_point = ncxNavPoint(page_id,page_title,page_src,play_order)
     entire_navpoint += nav_point
     init_id += 1
