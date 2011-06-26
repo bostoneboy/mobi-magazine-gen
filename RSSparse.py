@@ -68,5 +68,4 @@ def updateDB(collection,url):
 def queryDB(collection):
   db = Connection().test
   post = db[collection]
-  result = list(post.find({'is_operate':'no'}).sort('date'))
-  return result
+  return list(post.find({'is_operate':'no'}).sort('date'))
