@@ -3,6 +3,7 @@
 
 <head profile="http://gmpg.org/xfn/11">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="keywords" content="kindle,mobi,infzm,nbweekly,nfpeople,南方周末,南都周刊,南方人物周刊,电子书,电子杂志" />
 <title>佩吉布林打卡門 &raquo; pagebrin dot com</title>
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -69,7 +70,7 @@ if ($handle = opendir($dir)){
 
 <tr><th colspan="5"><hr></th></tr> 
 </table> 
-<address> Powered by pagebrin.com & 
+<address> Powered by <a href="http://pagebrin.com" target="_blank">pagebrin.com</a> & 
   <a href="http://twitter.com/#!/Bill_JaJa" target="_blank">@Bill_JaJa</a>
 </address> 
 
