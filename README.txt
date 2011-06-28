@@ -7,7 +7,7 @@
 Config:
 modify the config file: config.cfg
 change the directory on SYSTEM section.
-change the "run weekday" for your need.
+change the "run weekday" if your need.
 
 项目页面： http://mobi.pagebrin.com/
 目前每周按时提供南方周末、南都周刊，南方人物周刊的mobi格式版本。
