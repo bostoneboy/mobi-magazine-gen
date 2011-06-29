@@ -5,16 +5,23 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="keywords" content="kindle,mobi,infzm,nbweekly,nfpeople,南方周末,南都周刊,南方人物周刊,电子书,电子杂志" />
 <title>佩吉布林打卡門 &raquo; pagebrin dot com</title>
+
 <script type="text/javascript">
+
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-8345312-1']);
+  _gaq.push(['_setDomainName', '.pagebrin.com']);
+  _gaq.push(['_setAllowHash', 'false']);
   _gaq.push(['_trackPageview']);
+
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+
 </script>
+
 </head>
 
 <body>
