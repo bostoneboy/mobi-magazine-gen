@@ -31,6 +31,12 @@
 本页面提供根据南方周末，南都周刊，南方人物周刊网站提供的RSS输出以周单位集结而成的电子杂志，每周按时出刊。
 </br>所提供电子杂志的格式为标准的.mobi，可在任何支持mobi格式的终端和软件上阅读，对<a href="http://www.kindle.com" target="_blank">Amazon Kindle</a>进行特别优化。
 </p>
+<p>
+出刊时间：</br>
+南都周刊（nbweekly）和南方人物周刊(nfpeople)于每周二上午11时更新；</br>
+南方周末（infzm）于每周五上午11时更新。
+</p>
+
 <table><tr><th><img src="blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=D">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr><tr><th colspan="5"><hr></th></tr> 
 
 <?php
