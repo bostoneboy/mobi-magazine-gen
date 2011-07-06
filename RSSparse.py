@@ -8,8 +8,13 @@ from xml.etree import ElementTree
 from pymongo import Connection 
 
 def fetchHtml(url):
-  action = urllib.urlopen(url)
-  content = action.read()
+  try:
+    action = urllib.urlopen(url)
+    content = action.read()
+  except:
+    print "can not open url:",url
+    content = ""
+  #content = action.read()
   return content
 
 # substitute the CR where in the title to blank.
@@ -49,13 +54,14 @@ def fetchListNFpeople(content):
       list_today.append(doc)
   return list_today
 
-def writeDB(collection,doc):
+def insertDB(collection,doc):
   db = Connection().test
   post = db[collection]
   if not post.find({'link':doc['link']}).count():
+    exception = 0
     is_operate = 'no'
     insert_time = time.time()
-    b = {'is_operate':is_operate,'insert_time':insert_time}
+    b = {'exception':exception,'is_operate':is_operate,'insert_time':insert_time}
     doc.update(b)
     post.insert(doc)
  
@@ -69,3 +75,17 @@ def queryDB(collection):
   db = Connection().test
   post = db[collection]
   return list(post.find({'is_operate':'no'}).sort('date'))
+
+def errorDB1(collection,url):
+  # error no1, can not fetch the url.
+  db = Connection().test
+  post = db[collection]
+  fetchhtml_time = time.time()
+  post.update({'link':url},{'$set':{'is_operate':'yes','fetchhtml_time':fetchhtml_time,'exception':1}})
+
+def errorDB2(collection,url):
+  # error no2, can not retire the html to key content.
+  db = Connection().test
+  post = db[collection]
+  fetchhtml_time = time.time()
+  post.update({'link':url},{'$set':{'is_operate':'yes','fetchhtml_time':fetchhtml_time,'exception':2}})
