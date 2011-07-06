@@ -126,7 +126,6 @@ def main():
     index = 1
     list_temp = list_index[:]
     for i in list_index:
-      print i['link']
       html_content = RSSparse.fetchHtml(i['link'])
       if not html_content:
         RSSparse.errorDB1(collection,i['link'])

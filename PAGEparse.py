@@ -45,7 +45,7 @@ def pageFormatNFpeople(content):
     content = keyword4.sub('<p>',content)
     content = keyword5.sub('<p>&nbsp;</p>\n',content)
     content = keyword6.sub('',content)
-  execpt:
+  except:
     print "can not parse key content."
     content = ""
   return content
