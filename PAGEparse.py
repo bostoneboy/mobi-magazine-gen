@@ -21,10 +21,14 @@ def pagechapterBlank():
 
 def pageFormat(content,pageparse_keyword):
   keyword = re.compile(pageparse_keyword,re.IGNORECASE)
-  result = keyword.search(content)
-  page_head = result.group(1)
-  page_body = result.group(2)
-  page = page_head + pagechapterBlank() + page_body
+  try:
+    result = keyword.search(content)
+    page_head = result.group(1)
+    page_body = result.group(2)
+    page = page_head + pagechapterBlank() + page_body
+  except:
+    print "can not parse key content." 
+    page = ""
   return page
   
 def pageFormatNFpeople(content):
@@ -34,12 +38,16 @@ def pageFormatNFpeople(content):
   keyword4 = re.compile(r'<p>(&nbsp;){2,}',re.IGNORECASE)        # delete the &nbsp; marks followed <p>
   keyword5 = re.compile(r'(<p>&nbsp;</p>\s*)+',re.IGNORECASE)
   keyword6 = re.compile(r'(<p><p>&nbsp;</p>)+',re.IGNORECASE)
-  content = keyword1.sub('',content)
-  content = keyword2.sub('',content)
-  content = keyword3.sub('<p>',content)
-  content = keyword4.sub('<p>',content)
-  content = keyword5.sub('<p>&nbsp;</p>\n',content)
-  content = keyword6.sub('',content)
+  try:
+    content = keyword1.sub('',content)
+    content = keyword2.sub('',content)
+    content = keyword3.sub('<p>',content)
+    content = keyword4.sub('<p>',content)
+    content = keyword5.sub('<p>&nbsp;</p>\n',content)
+    content = keyword6.sub('',content)
+  except:
+    print "can not parse key content."
+    content = ""
   return content
 
 def downloadIMG(content,title):

@@ -103,7 +103,7 @@ def main():
     else:
       list_today = RSSparse.fetchList(content,findall_key,find_key)
     for i in list_today:
-      RSSparse.writeDB(collection,i)
+      RSSparse.insertDB(collection,i)
     
     weekday = time.strftime("%w", time.localtime())
     if weekday != handle_weekday:
@@ -114,9 +114,7 @@ def main():
     # PAGE parse
     list_index = RSSparse.queryDB(collection)
     # if list_index is blank, skip it.
-    if list_index:
-      pass
-    else:
+    if not list_index:
       continue
 
     # create directory for temp file. 
@@ -126,11 +124,21 @@ def main():
       
     # down html file and image.
     index = 1
+    list_temp = list_index[:]
     for i in list_index:
       html_content = RSSparse.fetchHtml(i['link'])
-      page = PAGEparse.pageFormat(html_content,pageparse_keyword)
+      if not html_content:
+        RSSparse.errorDB(collection,i['link'],errorcode=1)
+        list_temp.remove(i)
+        continue
       if re.search(r'nfpeople',title):
         page = PAGEparse.pageFormatNFpeople(page)
+      else:
+        page = PAGEparse.pageFormat(html_content,pageparse_keyword)
+      if not page:
+        RSSparse.errorDB(collection,i['link'],errorcode=2)
+        list_temp.remove(i)
+        continue
       page_downloadimg = PAGEparse.downloadIMG(page,title)
       page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
       page_entire = PAGEparse.htmlHeader() + page_addbodytag
@@ -140,6 +148,7 @@ def main():
       index += 1
       # update database's is_operate name.
       RSSparse.updateDB(collection,i['link'])
+    list_index = list_temp[:]
 
     # OPF generation
     opf_metadata = OPFgen.opfMetadata(item,config_file)
