@@ -91,7 +91,7 @@ def main():
 
     # generate the url of this week's nfpeople
     if re.search(r'nfpeople',title):
-      uri = str(int(time.strftime("%W", time.localtime())) + 7)
+      uri = str(int(time.strftime("%W", time.localtime())) + 9)
       uri = "Magazine-detail-item-" + uri + ".html"
       url += uri
     
@@ -131,14 +131,13 @@ def main():
         RSSparse.errorDB(collection,i['link'],errorcode=1)
         list_temp.remove(i)
         continue
-      if re.search(r'nfpeople',title):
-        page = PAGEparse.pageFormatNFpeople(page)
-      else:
-        page = PAGEparse.pageFormat(html_content,pageparse_keyword)
+      page = PAGEparse.pageFormat(html_content,pageparse_keyword)
       if not page:
         RSSparse.errorDB(collection,i['link'],errorcode=2)
         list_temp.remove(i)
         continue
+      if re.search(r'nfpeople',title):
+        page = PAGEparse.pageFormatNFpeople(page)
       page_downloadimg = PAGEparse.downloadIMG(page,title)
       page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
       page_entire = PAGEparse.htmlHeader() + page_addbodytag
