@@ -66,8 +66,7 @@ def insertDB(collection,doc,errorno = 0):
 def updateDB(collection,url):
   db = Connection().test
   post = db[collection]
-  fetchhtml_time = time.time()
-  post.update({'link':url},{'$set':{'is_operate':'yes','fetchhtml_time':fetchhtml_time}})
+  post.update({'link':url},{'$set':{'is_operate':'yes'}})
 
 def queryDB(collection):
   db = Connection().test

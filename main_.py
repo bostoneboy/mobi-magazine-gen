@@ -82,7 +82,6 @@ def main():
   base_dir     = config.get("SYSTEM","base directory")
   temp_dir     = config.get("SYSTEM","temp directory")
   image_dir    = config.get("SYSTEM","image directory")
-  mobi_dir     = config.get("SYSTEM","mobi directory")
   publ_dir     = config.get("SYSTEM","publish directory")
   config_file  = os.path.join(base_dir,"config.cfg")
   
@@ -138,12 +137,10 @@ def main():
         html_content = RSSparse.fetchHtml(line["link"])
         if not html_content:
           RSSparse.insertDB(collection,line,errorno = 1)
-          #list_temp.remove(i)
           continue
         page = PAGEparse.pageFormat(html_content,pageparse_keyword)
         if not page:
           RSSparse.insertDB(collection,line,errorno = 2)
-          #list_temp.remove(i)
           continue
         if re.search(r'nfpeople',title):
           page = PAGEparse.pageFormatNFpeople(page)
@@ -155,13 +152,11 @@ def main():
         #os.chdir(oebps_dir)
         page_addbodytag = PAGEparse.addBodytag(dic["entire"])
         page_entire = PAGEparse.htmlHeader() + page_addbodytag
-        #out_filename = str(index) + ".html"
-        #PAGEparse.writeHtml(out_filename,page_entire)
         doc = {}
         doc["html"] = page_entire
         doc["image"] = dic["image"]
         doc.update(line)
-        insertDB(collection,doc,errorno = 0)
+        RSSparse.insertDB(collection,doc,errorno = 0)
     
     weekday = time.strftime("%w", time.localtime())
     if weekday != handle_weekday:
@@ -183,18 +178,17 @@ def main():
     makeDir(oebps_dir)
     os.chdir(oebps_dir)
     index = 1
-    #list_temp = list_index[:]
-    list_index1 = queryDB(collection)
+    list_index1 = RSSparse.queryDB(collection)
     for i in list_index1:
       out_filename = str(index) + ".html"
-      PAGEparse.writeHtml(out_filename,list_index1["html"])
-      image_pathfrom = os.path.join(image_dir,i)
+      PAGEparse.writeHtml(out_filename,i["html"].encode("utf-8"))
       image_pathto = os.path.join(oebps_dir,"images")
       makeDir(image_pathto)
-      for j in list_index1["image"]:
+      for j in i["image"]:
+        image_pathfrom = os.path.join(image_dir,j)
         shutil.copy(image_pathfrom,image_pathto)
       index += 1
-      # update database's is_operate name.
+      # update database's is_operate value.
       RSSparse.updateDB(collection,i['link'])
 
     # OPF generation
