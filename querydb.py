@@ -18,6 +18,6 @@ post = db[collection]
 list_yes = post.find({'is_operate':'yes'}).sort('date')
 list_no = post.find({'is_operate':'no'}).sort('date')
 for i in list_yes:
-  print i['is_operate'],i['date'],i['link'],i['insert_time'],i['fetchhtml_time']
+  print i['is_operate'],i['date'],i['link'],i['insert_time']
 for j in list_no:
   print j['is_operate'],j['date'],j['link'],j['insert_time']

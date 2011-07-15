@@ -10,17 +10,23 @@ def randomString(count):
   basestring = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   return "".join(random.sample(basestring,count))
 
+def writeFile(filename,open_type,write_content):
+  action = open(filename,open_type)
+  action.write(write_content)
+  action.close()
+
 ##########################################
 ###### genenaration the opf file: index.opf
 def opfHeader(bookid):
   bookid = randomString(12)
   head = '''<?xml version="1.0" encoding="utf-8"?>
-            <package version="2.0" xmlns:opf="http://www.idpf.org/2007/opf" unique-identifier="%s">''' % bookid
+            <package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="%s">''' % bookid
   return head + "\n"
 
 def metadataTag(tagname,value):
   if not value:
-    line = "<dc:%s/>\n" % tagname
+    #line = "<dc:%s/>\n" % tagname
+    line = ""
   else:
     line = '<dc:%s>%s</dc:%s>\n' % (tagname,value,tagname)
   return line
@@ -71,9 +77,9 @@ def opfMetadata(item,config_file):
   dcbody += metadataTag("relation",relation)
   dcbody += metadataTag("coverage",coverage)
   dcbody += metadataTag("title",rights)
-  dcbody += "</dc-metadata>\n"
+  #dcbody += "</dc-metadata>\n"
   dcentire = head + dcbody
-  dcentire += "<x-metadata/>\n"
+  #dcentire += "<x-metadata/>\n"
   dcentire += "</metadata>\n"
   return dcentire
 
@@ -92,8 +98,8 @@ def opfMainfest(list_index):
     item_id = str(i)              
     href = item_id + ".html"
     mfbody += mainfestLine(item_id,href)
-  # add index content KUG.ncx
-  mfbody += mainfestLine("content_index","KUG.ncx","application/x-dtbncx+xml")
+  # add index content toc.ncx
+  mfbody += mainfestLine("content_index","toc.ncx","application/x-dtbncx+xml")
   mffoot = "</manifest>\n"
   mfentire = mfhead + mfbody + mffoot
   return mfentire
@@ -203,3 +209,16 @@ def ncxEntireNavPoint(list_index):
 def ncxNavMap(nav_point):
   return "<navMap>" + "\n" + nav_point + "</navMap>" + "\n"
 
+def genMimetype():
+  content = "application/epub+zip"
+  writeFile("mimetype","w",content)
+
+def genContainer():
+  content = '''<?xml version="1.0"?>\n
+                 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n
+                   <rootfiles>\n
+                   <rootfile full-path="OEBPS/content.opf"\n
+                     media-type="application/oebps-package+xml" />\n
+                   </rootfiles>\n
+                 </container>\n'''
+  writeFile("container.xml","w",content)

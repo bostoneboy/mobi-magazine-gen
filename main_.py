@@ -23,14 +23,41 @@ def randomString(count):
   
 def makeDir(directory):
   if not os.path.isdir(directory):
-    os.mkdir(directory)
+    os.makedirs(directory)
   else:
     pass
     
-def kindleGen(opf_file,mobi_file):
+def compareFilename(filename_base,ebook_type,publ_dir):
+  filename = filename_base + "." + ebook_type
+  if os.path.isfile(os.path.join(publ_dir,filename)):
+    filename1 = filename_base + "-" + randomString(6) + "." + ebook_type
+  else:
+    filename1 = filename
+  return os.path.join(publ_dir,filename1)
+
+def genEpub(work_dir,filename_base,publ_dir):
+  os.chdir(work_dir)
+  OPFgen.genMimetype()
+  makeDir("META-INF")
+  os.chdir("META-INF")
+  OPFgen.genContainer()
+  os.chdir(work_dir)
+  filename = filename_base + ".epub"
+  command1 = "zip -0Xq " + filename + " mimetype"
+  command2 = "zip -Xr9Dq " + filename + " *"
+  os.system(command1)
+  os.system(command2)
+  filename_dest = compareFilename(filename_base,"epub",publ_dir)
+  shutil.move(filename,filename_dest)
+
+def genMobi(work_dir,filename_base,publ_dir):
+  os.chdir(work_dir)
   param = " -c1 -verbose -o "
-  command = "kindlegen " + opf_file + param + mobi_file
+  filename = filename_base + ".mobi"
+  command = "kindlegen " + "content.opf " + param + filename
   os.system(command)
+  filename_dest = compareFilename(filename_base,"mobi",publ_dir)
+  shutil.move(filename,filename_dest)
   
 def mailSend(mail_from,mail_to,attachment):
   subject = attachment
@@ -49,9 +76,11 @@ def main():
   config = ConfigParser()
   config.read(config_file)
   
+  mail_enable  = config.get("SYSTEM","mail enable")
   mail_from    = config.get("SYSTEM","mail from")
   mail_to      = config.get("SYSTEM","mail to")
   base_dir     = config.get("SYSTEM","base directory")
+  temp_dir     = config.get("SYSTEM","temp directory")
   mobi_dir     = config.get("SYSTEM","mobi directory")
   publ_dir     = config.get("SYSTEM","publish directory")
   config_file  = os.path.join(base_dir,"config.cfg")
@@ -117,10 +146,11 @@ def main():
     if not list_index:
       continue
 
-    # create directory for temp file. 
-    temp_dir = os.path.join(config.get("SYSTEM","temp directory"),str(int(time.time())))
-    makeDir(temp_dir)
-    os.chdir(temp_dir)
+    # create directory for OEBPS-temp file. 
+    temp_dir = os.path.join(temp_dir,str(int(time.time())))
+    oebps_dir = os.path.join(temp_dir,"OEBPS")
+    makeDir(oebps_dir)
+    os.chdir(oebps_dir)
       
     # down html file and image.
     index = 1
@@ -138,11 +168,16 @@ def main():
         continue
       if re.search(r'nfpeople',title):
         page = PAGEparse.pageFormatNFpeople(page)
+
+      # down image in html enties. 
+      image_dir = os.path.join(oebps_dir,"images")
+      makeDir(image_dir)
       page_downloadimg = PAGEparse.downloadIMG(page,title)
+
+      os.chdir(oebps_dir)
       page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
       page_entire = PAGEparse.htmlHeader() + page_addbodytag
       out_filename = str(index) + ".html"
-      #out_filename = temp_dir + out_filename
       PAGEparse.writeHtml(out_filename,page_entire)
       index += 1
       # update database's is_operate name.
@@ -152,7 +187,7 @@ def main():
     # OPF generation
     opf_metadata = OPFgen.opfMetadata(item,config_file)
     opf_entire = OPFgen.opfHeader(bookid) + opf_metadata + OPFgen.opfMainfest(list_index) + OPFgen.opfSpine(list_index) + OPFgen.opfGuide() + OPFgen.opfFooter()
-    opf_filename = "index.opf"
+    opf_filename = "content.opf"
     writeFile(opf_filename,"w",opf_entire)
 
     # INDEX html file generation
@@ -163,7 +198,7 @@ def main():
     html_filename = "0.html"
     writeFile(html_filename,"w",index_entire)
 
-    # KUG.ncx generation
+    # TOC.ncx generation
     ncx_header = OPFgen.ncxHeader()
     ncx_head = OPFgen.ncxHead(bookid)
     ncx_doctitle = OPFgen.ncxDocTitle(title2)
@@ -173,24 +208,20 @@ def main():
     ncx_body = ncx_head + ncx_doctitle + ncx_docauthor + ncx_navmap
     ncx_body = OPFgen.ncxBody(ncx_body)
     ncx_entire = ncx_header + ncx_body
-    ncx_filename = "KUG.ncx"
+    ncx_filename = "toc.ncx"
     writeFile(ncx_filename,"w",ncx_entire)
     
-    # genaration the .mobi file use system tool kindlegen
-    opf_file = "index.opf"
-    mobi_file = title2 + ".mobi"
-    if os.path.isfile(os.path.join(mobi_dir,mobi_file)):
-      mobi_file = title2 + "-" + randomString(6) + ".mobi"
-    kindleGen(opf_file,mobi_file)
-    if publ_dir:
-      shutil.copy(mobi_file,publ_dir)
-    shutil.move(mobi_file,mobi_dir)
+    # genaration the epub book.
+    genEpub(temp_dir,title2,publ_dir)
+
+    # genaration the mobi book use system tool kindlegen
+    genMobi(oebps_dir,title2,publ_dir)
     
     # mail mobi book as attachment to specified mail address.
-    os_type = platform.system() 
-    if os_type == "Linux":
-      os.chdir(mobi_dir)
-      mailSend(mail_from,mail_to,mobi_file)
+    if mail_enable == "yes":
+      os.chdir(publ_dir)
+      attachment = title2 + ".mobi"
+      mailSend(mail_from,mail_to,attachment)
 
 if __name__ == "__main__":
   main()

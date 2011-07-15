@@ -64,6 +64,7 @@ def downloadIMG(content,title):
       img_url = list
     img_prefix = randomString(6)
     img_filename = img_prefix + re.search(r'(.[\w_-]+)$',img_url).group(1)
+    img_filename = os.path.join("images",img_filename)
     try:
       urllib.urlretrieve(img_url,img_filename)
     except:
