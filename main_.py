@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os
 import re
@@ -81,11 +81,13 @@ def main():
   mail_to      = config.get("SYSTEM","mail to")
   base_dir     = config.get("SYSTEM","base directory")
   temp_dir     = config.get("SYSTEM","temp directory")
+  image_dir    = config.get("SYSTEM","image directory")
   mobi_dir     = config.get("SYSTEM","mobi directory")
   publ_dir     = config.get("SYSTEM","publish directory")
   config_file  = os.path.join(base_dir,"config.cfg")
   
-  makeDir(mobi_dir)
+  makeDir(publ_dir)
+  makeDir(image_dir)
   
   config_list = config.sections()
   rss_list    = [i for i in config_list if re.search(r"RSS",i)]
@@ -131,8 +133,35 @@ def main():
       list_today = RSSparse.fetchListNFpeople(content)
     else:
       list_today = RSSparse.fetchList(content,findall_key,find_key)
-    for i in list_today:
-      RSSparse.insertDB(collection,i)
+    for line in list_today:
+      if not RSSparse.isqueryDB(collection,line["link"]):
+        html_content = RSSparse.fetchHtml(line["link"])
+        if not html_content:
+          RSSparse.insertDB(collection,line,errorno = 1)
+          #list_temp.remove(i)
+          continue
+        page = PAGEparse.pageFormat(html_content,pageparse_keyword)
+        if not page:
+          RSSparse.insertDB(collection,line,errorno = 2)
+          #list_temp.remove(i)
+          continue
+        if re.search(r'nfpeople',title):
+          page = PAGEparse.pageFormatNFpeople(page)
+        
+        # down image in html enties. 
+        os.chdir(image_dir)
+        dic = PAGEparse.downloadIMG(page,title)
+        
+        #os.chdir(oebps_dir)
+        page_addbodytag = PAGEparse.addBodytag(dic["entire"])
+        page_entire = PAGEparse.htmlHeader() + page_addbodytag
+        #out_filename = str(index) + ".html"
+        #PAGEparse.writeHtml(out_filename,page_entire)
+        doc = {}
+        doc["html"] = page_entire
+        doc["image"] = dic["image"]
+        doc.update(line)
+        insertDB(collection,doc,errorno = 0)
     
     weekday = time.strftime("%w", time.localtime())
     if weekday != handle_weekday:
@@ -146,53 +175,37 @@ def main():
     if not list_index:
       continue
 
+
+    # down html file and image.
     # create directory for OEBPS-temp file. 
     temp_dir = os.path.join(temp_dir,str(int(time.time())))
     oebps_dir = os.path.join(temp_dir,"OEBPS")
     makeDir(oebps_dir)
     os.chdir(oebps_dir)
-      
-    # down html file and image.
     index = 1
-    list_temp = list_index[:]
-    for i in list_index:
-      html_content = RSSparse.fetchHtml(i['link'])
-      if not html_content:
-        RSSparse.errorDB(collection,i['link'],errorcode=1)
-        list_temp.remove(i)
-        continue
-      page = PAGEparse.pageFormat(html_content,pageparse_keyword)
-      if not page:
-        RSSparse.errorDB(collection,i['link'],errorcode=2)
-        list_temp.remove(i)
-        continue
-      if re.search(r'nfpeople',title):
-        page = PAGEparse.pageFormatNFpeople(page)
-
-      # down image in html enties. 
-      image_dir = os.path.join(oebps_dir,"images")
-      makeDir(image_dir)
-      page_downloadimg = PAGEparse.downloadIMG(page,title)
-
-      os.chdir(oebps_dir)
-      page_addbodytag = PAGEparse.addBodytag(page_downloadimg)
-      page_entire = PAGEparse.htmlHeader() + page_addbodytag
+    #list_temp = list_index[:]
+    list_index1 = queryDB(collection)
+    for i in list_index1:
       out_filename = str(index) + ".html"
-      PAGEparse.writeHtml(out_filename,page_entire)
+      PAGEparse.writeHtml(out_filename,list_index1["html"])
+      image_pathfrom = os.path.join(image_dir,i)
+      image_pathto = os.path.join(oebps_dir,"images")
+      makeDir(image_pathto)
+      for j in list_index1["image"]:
+        shutil.copy(image_pathfrom,image_pathto)
       index += 1
       # update database's is_operate name.
       RSSparse.updateDB(collection,i['link'])
-    list_index = list_temp[:]
 
     # OPF generation
     opf_metadata = OPFgen.opfMetadata(item,config_file)
-    opf_entire = OPFgen.opfHeader(bookid) + opf_metadata + OPFgen.opfMainfest(list_index) + OPFgen.opfSpine(list_index) + OPFgen.opfGuide() + OPFgen.opfFooter()
+    opf_entire = OPFgen.opfHeader(bookid) + opf_metadata + OPFgen.opfMainfest(list_index1) + OPFgen.opfSpine(list_index1) + OPFgen.opfGuide() + OPFgen.opfFooter()
     opf_filename = "content.opf"
     writeFile(opf_filename,"w",opf_entire)
 
     # INDEX html file generation
     html_header = OPFgen.htmlHeader()
-    html_body = OPFgen.htmlBody(list_index)
+    html_body = OPFgen.htmlBody(list_index1)
     html_body = OPFgen.addBodytag(html_body)
     index_entire = html_header + html_body
     html_filename = "0.html"
@@ -203,7 +216,7 @@ def main():
     ncx_head = OPFgen.ncxHead(bookid)
     ncx_doctitle = OPFgen.ncxDocTitle(title2)
     ncx_docauthor = OPFgen.ncxDocAuthor(creator)
-    ncx_entirenavpoint = OPFgen.ncxEntireNavPoint(list_index)
+    ncx_entirenavpoint = OPFgen.ncxEntireNavPoint(list_index1)
     ncx_navmap = OPFgen.ncxNavMap(ncx_entirenavpoint)
     ncx_body = ncx_head + ncx_doctitle + ncx_docauthor + ncx_navmap
     ncx_body = OPFgen.ncxBody(ncx_body)

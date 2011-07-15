@@ -51,27 +51,33 @@ def pageFormatNFpeople(content):
   return content
 
 def downloadIMG(content,title):
+  image_list = []
+  dic = {}
   img_uri_prefix = randomString(6)
+  date = time.strftime("%Y-%m-%d", time.localtime())
   img_tab = re.findall(r'<img[\s\S]*?src="(\S+)?"',content)
-  for list in img_tab:
+  for listt in img_tab:
     if re.search(r"nbweekly",title):
       base_url = "http://www.nbweekly.com"
-      img_url = base_url + list
+      img_url = base_url + listt
     elif re.search(r"nfpeople",title):
       base_url = "http://www.nfpeople.com"
-      img_url = base_url + list
+      img_url = base_url + listt
     else:
-      img_url = list
+      img_url = listt
     img_prefix = randomString(6)
-    img_filename = img_prefix + re.search(r'(.[\w_-]+)$',img_url).group(1)
-    img_filename = os.path.join("images",img_filename)
+    img_filename = date + img_prefix + re.search(r'(.[\w_-]+)$',img_url).group(1)
+    #img_filename = os.path.join("images",img_filename)
     try:
       urllib.urlretrieve(img_url,img_filename)
     except:
       print "cannot retrieve image on the server: %s" % img_url
       img_filename = ""
-    content = re.sub(list,img_filename,content)
-  return content
+    image_list.append(img_filename)
+  content = re.sub(listt,img_filename,content)
+  dic["entire"] = content
+  dic["image"] = image_list
+  return dic
 
 def htmlHeader():
   head = '''<html xmlns="http://www.w3.org/1999/xhtml"> 

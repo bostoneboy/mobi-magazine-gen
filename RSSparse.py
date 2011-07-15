@@ -54,16 +54,14 @@ def fetchListNFpeople(content):
       list_today.append(doc)
   return list_today
 
-def insertDB(collection,doc):
+def insertDB(collection,doc,errorno = 0):
   db = Connection().test
   post = db[collection]
-  if not post.find({'link':doc['link']}).count():
-    exception = 0
-    is_operate = 'no'
-    insert_time = time.time()
-    b = {'exception':exception,'is_operate':is_operate,'insert_time':insert_time}
-    doc.update(b)
-    post.insert(doc)
+  is_operate = 'no'
+  insert_time = time.time()
+  b = {'exception':errorno,'is_operate':is_operate,'insert_time':insert_time}
+  doc.update(b)
+  post.insert(doc)
  
 def updateDB(collection,url):
   db = Connection().test
@@ -74,7 +72,12 @@ def updateDB(collection,url):
 def queryDB(collection):
   db = Connection().test
   post = db[collection]
-  return list(post.find({'is_operate':'no'}).sort('date'))
+  return list(post.find({'is_operate':'no'} , {'errorno' : 0}).sort('date'))
+
+def isqueryDB(collection,url):
+  db = Connection().test
+  post = db[collection]
+  return post.find({'link' : url}).count()
 
 def errorDB(collection,url,errorcode):
   # errorcode = 1, can not fetch the url.
