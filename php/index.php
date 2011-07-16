@@ -69,15 +69,15 @@ if ($handle = opendir($dir)){
   foreach($line as $key => $value){
     $filename = substr($value[0],0,-6);
     $filepath_mobi = $dir.$filename.".mobi";
-    $filepath_epub = $dir.$filename.".epub"
+    $filepath_epub = $dir.$filename.".epub";
     $display_time = date ("m/d/Y", $key);
     #$filesize = $value[1];
-    $mobi = '<a href="'.$filepath_mobi.'">mobi</a>'
+    $mobi = '<a href="'.$filepath_mobi.'">mobi</a>';
     if(file_exists($filepath_epub)){
-      $epub = '<a href="'.$filepath_epub.'">epub</a>'
+      $epub = '<a href="'.$filepath_epub.'">epub</a>';
     }
     else{
-      $epub = "----"
+      $epub = "----";
     }
     print "\n".'<tr><td valign="top"><img src="icon.png" alt="[   ]"></td>';
     print '<td>$filename</td>';
