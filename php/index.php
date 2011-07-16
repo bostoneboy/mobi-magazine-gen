@@ -67,11 +67,10 @@ if ($handle = opendir($dir)){
 
   krsort($line);
   foreach($line as $key => $value){
-    $filename = substr($value[0],0,-6);
+    $filename = substr($value[0],0,-5);
     $filepath_mobi = $dir.$filename.".mobi";
     $filepath_epub = $dir.$filename.".epub";
     $display_time = date ("m/d/Y", $key);
-    #$filesize = $value[1];
     $mobi = '<a href="'.$filepath_mobi.'">mobi</a>';
     if(file_exists($filepath_epub)){
       $epub = '<a href="'.$filepath_epub.'">epub</a>';
@@ -80,8 +79,8 @@ if ($handle = opendir($dir)){
       $epub = "----";
     }
     print "\n".'<tr><td valign="top"><img src="icon.png" alt="[   ]"></td>';
-    print '<td>$filename</td>';
-    print '<td align="right">'.$mobi.'  '.$epub.'</td>';
+    print '<td>'.$filename.'&nbsp&nbsp&nbsp&nbsp'.'</td>';
+    print '<td align="right">'.$mobi.'&nbsp&nbsp&nbsp&nbsp'.$epub.'</td>';
     print '<td align="right">'.$display_time.'</td>';
     print '<td>&nbsp;</td></tr> ';
   }
@@ -91,7 +90,7 @@ if ($handle = opendir($dir)){
 <tr><th colspan="5"><hr></th></tr> 
 </table> 
 <address> Powered by <a href="http://pagebrin.com" target="_blank">pagebrin.com</a> & 
-  <a href="http://twitter.com/#!/Bill_JaJa" target="_blank">@Bill_JaJa</a>
+  Bill_<a href="http://twitter.com/#!/Bill_JaJa" target="_blank">+</a><a href="https://plus.google.com/117607588415047165032" target="_blank">+</a>
 </address> 
 
 </body>

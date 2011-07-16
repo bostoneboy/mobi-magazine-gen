@@ -71,17 +71,9 @@ def updateDB(collection,url):
 def queryDB(collection):
   db = Connection().test
   post = db[collection]
-  return list(post.find({'is_operate':'no'} , {'errorno' : 0}).sort('date'))
+  return list(post.find({'is_operate':'no' , 'exception' : 0}).sort('date'))
 
 def isqueryDB(collection,url):
   db = Connection().test
   post = db[collection]
   return post.find({'link' : url}).count()
-
-def errorDB(collection,url,errorcode):
-  # errorcode = 1, can not fetch the url.
-  # errorcode = 2, can not parse the key content.
-  db = Connection().test
-  post = db[collection]
-  fetchhtml_time = time.time()
-  post.update({'link':url},{'$set':{'is_operate':'yes','fetchhtml_time':fetchhtml_time,'exception':errorcode}})
