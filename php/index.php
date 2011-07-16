@@ -51,9 +51,7 @@ if ($handle = opendir($dir)){
       $ctime = filemtime($file_path_1);
       while (array_key_exists($ctime,$line))
         $ctime += 1;
-      $csize = format_bytes(filesize($file_path_1));
       $line_sub[] = $file;
-      $line_sub[] = $csize;
       $line[$ctime] = $line_sub;
     }
   }
