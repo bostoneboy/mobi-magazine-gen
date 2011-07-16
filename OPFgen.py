@@ -25,7 +25,6 @@ def opfHeader(bookid):
 
 def metadataTag(tagname,value):
   if not value:
-    #line = "<dc:%s/>\n" % tagname
     line = ""
   else:
     line = '<dc:%s>%s</dc:%s>\n' % (tagname,value,tagname)
@@ -76,7 +75,7 @@ def opfMetadata(item,config_file):
   dcbody += metadataTag("language",language)
   dcbody += metadataTag("relation",relation)
   dcbody += metadataTag("coverage",coverage)
-  dcbody += metadataTag("title",rights)
+  dcbody += metadataTag("rights",rights)
   #dcbody += "</dc-metadata>\n"
   dcentire = head + dcbody
   #dcentire += "<x-metadata/>\n"
