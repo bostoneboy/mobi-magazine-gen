@@ -36,25 +36,20 @@ def compareFilename(filename_base,ebook_type,publ_dir):
   return os.path.join(publ_dir,filename1)
 
 def genEpub(work_dir,filename_base,publ_dir):
-  os.chdir(work_dir)
-  OPFgen.genMimetype()
-  makeDir("META-INF")
-  os.chdir("META-INF")
-  OPFgen.genContainer()
-  os.chdir(work_dir)
   filename = filename_base + ".epub"
   command1 = "zip -0Xq " + filename + " mimetype"
   command2 = "zip -Xr9Dq " + filename + " *"
+  os.chdir(work_dir)
   os.system(command1)
   os.system(command2)
   filename_dest = compareFilename(filename_base,"epub",publ_dir)
   shutil.move(filename,filename_dest)
 
 def genMobi(work_dir,filename_base,publ_dir):
-  os.chdir(work_dir)
   param = " -c1 -verbose -o "
   filename = filename_base + ".mobi"
   command = "kindlegen " + "content.opf " + param + filename
+  os.chdir(work_dir)
   os.system(command)
   filename_dest = compareFilename(filename_base,"mobi",publ_dir)
   shutil.move(filename,filename_dest)
@@ -217,6 +212,16 @@ def main():
     ncx_entire = ncx_header + ncx_body
     ncx_filename = "toc.ncx"
     writeFile(ncx_filename,"w",ncx_entire)
+    
+    # copy structure files.
+    res_dir = os.path.join(base_dir,"resource")
+    mimetype_path = os.path.join(res_dir,"mimetype")
+    stylesheet_path = os.path.join(res_dir,"stylesheet.css")
+    metainf_path = os.path.join(res_dir,"META-INF")
+    shutil.copy(mimetype_path,work_dir)
+    shutil.copy(stylesheet_path,os.path.join(work_dir,"OEBPS"))
+    shutil.copytree(metainf_path,os.path.join(work_dir,"META-INF"))
+    
     
     # genaration the epub book.
     genEpub(temp_dir,title2,publ_dir)

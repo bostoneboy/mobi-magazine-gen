@@ -1,0 +1,55 @@
+/* Style Sheet for mobi and ePub Books */
+
+/* Set margins at 2% (This gives a white border around the book) */
+
+body {margin-left:2%;
+    margin-right:2%;
+    margin-top:2%;
+    margin-bottom:2%;
+    font-family: "Î¢ÈíÑÅºÚ","ËÎÌå","Times New Roman";
+    }
+
+*/ Text indent will make a paragraph indent, like putting a tab at the beginning of each new paragraph
+   The margin settings get rid of the white space between paragraphs, again so it looks more like a book
+   The text-align line justifies the margins. If you don't want them justified, change it to left, or remove that line
+   You don't have to specify a font, but you can */
+
+p {text-indent: .3in;
+    margin-left:0;
+    margin-right:0;
+    margin-top:0;
+    margin-bottom:0;
+    text-align: justify
+    font-family:"Î¢ÈíÑÅºÚ","ËÎÌå","Times New Roman";
+    }
+
+/* Here we make our headings centered
+   We've also made the headings the same font as the body text */
+
+ h1 { text-align: center;
+    font-family:"Î¢ÈíÑÅºÚ","ËÎÌå","Times New Roman"; }
+h2 { text-align: center;
+    font-family:"Î¢ÈíÑÅºÚ","ËÎÌå","Times New Roman"; }
+h3 { text-align: center;
+    font-family:"Î¢ÈíÑÅºÚ","ËÎÌå","Times New Roman"; }
+
+/* CSS class for centering an image */
+
+.CI {
+    text-align:center;
+    margin-top:0px;
+    margin-bottom:0px;
+    padding:0px;
+    }
+
+/* CSS for centering, small-caps, under-lining, and bold */
+
+.center   {text-align: center;}
+.smcap    {font-variant: small-caps;}
+.u        {text-decoration: underline;}
+.bold     {font-weight: bold;}
+
+/* CSS for off-seting margins for poems */
+
+.poem { margin-left: 3em;
+      margin-right: 3em; }

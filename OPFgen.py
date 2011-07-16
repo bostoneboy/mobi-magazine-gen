@@ -208,17 +208,3 @@ def ncxEntireNavPoint(list_index):
 
 def ncxNavMap(nav_point):
   return "<navMap>" + "\n" + nav_point + "</navMap>" + "\n"
-
-def genMimetype():
-  content = "application/epub+zip"
-  writeFile("mimetype","w",content)
-
-def genContainer():
-  content = '''<?xml version="1.0"?>\n
-                 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n
-                   <rootfiles>\n
-                   <rootfile full-path="OEBPS/content.opf"\n
-                     media-type="application/oebps-package+xml" />\n
-                   </rootfiles>\n
-                 </container>\n'''
-  writeFile("container.xml","w",content)
