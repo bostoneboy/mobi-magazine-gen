@@ -30,21 +30,15 @@
 <p>
 本页面提供根据南方周末，南都周刊，南方人物周刊网站提供的RSS输出以周单位集结而成的电子杂志，每周按时出刊。
 </br>
-南都周刊（nbweekly）于每周二上午11时更新；南方人物周刊（nfpeople）每周三11时；南方周末（infzm）每周五11时。
+南方人物周刊（nfpeople）每周二上午11时；南都周刊（nbweekly）于每周三11时更新；南方周末（infzm）每周五11时。
 </p>
 <p>
-所提供电子杂志的格式为标准的.mobi，可在任何支持mobi格式的终端和软件上阅读，对<a href="http://www.kindle.com" target="_blank">Amazon Kindle</a>进行特别优化。
+同时提供mobi和epub两种格式下载。<a href="http://www.kindle.com" target="_blank">Amazon Kindle</a>用户请下载mobi版本，所有内容已针对Kindle进行优化。
 </p>
 
 <table><tr><th><img src="blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=D">Name</a></th><th><a href="?C=S;O=A">Download</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=D;O=A">Description</a></th></tr><tr><th colspan="5"><hr></th></tr> 
 
 <?php
-
-function format_bytes($bytes) {
-   if ($bytes < 1024) return $bytes.' B';
-   elseif ($bytes < 1048576) return round($bytes / 1024, 2).' KB';
-   elseif ($bytes < 1073741824) return round($bytes / 1048576, 2).' MB';
-}
 
 $dir = './';
 if ($handle = opendir($dir)){
