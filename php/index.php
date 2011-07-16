@@ -36,7 +36,7 @@
 所提供电子杂志的格式为标准的.mobi，可在任何支持mobi格式的终端和软件上阅读，对<a href="http://www.kindle.com" target="_blank">Amazon Kindle</a>进行特别优化。
 </p>
 
-<table><tr><th><img src="blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=D">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr><tr><th colspan="5"><hr></th></tr> 
+<table><tr><th><img src="blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=D">Name</a></th><th><a href="?C=S;O=A">Download</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=D;O=A">Description</a></th></tr><tr><th colspan="5"><hr></th></tr> 
 
 <?php
 
@@ -67,14 +67,22 @@ if ($handle = opendir($dir)){
 
   krsort($line);
   foreach($line as $key => $value){
-    $filename = $value[0];
-    $file_path_2 = $dir.$filename;
+    $filename = substr($value[0],0,-6);
+    $filepath_mobi = $dir.$filename.".mobi";
+    $filepath_epub = $dir.$filename.".epub"
     $display_time = date ("m/d/Y", $key);
-    $filesize = $value[1];
+    #$filesize = $value[1];
+    $mobi = '<a href="'.$filepath_mobi.'">mobi</a>'
+    if(file_exists($filepath_epub)){
+      $epub = '<a href="'.$filepath_epub.'">epub</a>'
+    }
+    else{
+      $epub = "----"
+    }
     print "\n".'<tr><td valign="top"><img src="icon.png" alt="[   ]"></td>';
-    print '<td><a href="'.$file_path_2.'">'.$filename.'</a></td>';
+    print '<td>$filename</td>';
+    print '<td align="right">'.$mobi.'  '.$epub.'</td>';
     print '<td align="right">'.$display_time.'</td>';
-    print '<td align="right">'.$filesize.'</td>';
     print '<td>&nbsp;</td></tr> ';
   }
 }
