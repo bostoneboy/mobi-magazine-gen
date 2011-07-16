@@ -78,6 +78,7 @@ def main():
   temp_dir     = config.get("SYSTEM","temp directory")
   image_dir    = config.get("SYSTEM","image directory")
   publ_dir     = config.get("SYSTEM","publish directory")
+  res_dir      = config.get("SYSTEM","resource directory")
   config_file  = os.path.join(base_dir,"config.cfg")
   
   makeDir(publ_dir)
@@ -214,13 +215,12 @@ def main():
     writeFile(ncx_filename,"w",ncx_entire)
     
     # copy structure files.
-    res_dir = os.path.join(base_dir,"resource")
     mimetype_path = os.path.join(res_dir,"mimetype")
     stylesheet_path = os.path.join(res_dir,"stylesheet.css")
     metainf_path = os.path.join(res_dir,"META-INF")
-    shutil.copy(mimetype_path,work_dir)
-    shutil.copy(stylesheet_path,os.path.join(work_dir,"OEBPS"))
-    shutil.copytree(metainf_path,os.path.join(work_dir,"META-INF"))
+    shutil.copy(mimetype_path,temp_dir)
+    shutil.copy(stylesheet_path,os.path.join(temp_dir,"OEBPS"))
+    shutil.copytree(metainf_path,os.path.join(temp_dir,"META-INF"))
     
     
     # genaration the epub book.

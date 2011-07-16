@@ -93,13 +93,13 @@ def Indexlist(database):
 
 def opfMainfest(list_index):
   mfhead = "<manifest>\n"
-  mfbody = ""
+  mfbody = mainfestLine("content_index","toc.ncx","application/x-dtbncx+xml")
+  mfbody += mainfestLine("style","stylesheet.css","text/css") 
   for i in range(len(list_index) + 1):
     item_id = str(i)              
     href = item_id + ".html"
     mfbody += mainfestLine(item_id,href)
   # add index content toc.ncx
-  mfbody += mainfestLine("content_index","toc.ncx","application/x-dtbncx+xml")
   mffoot = "</manifest>\n"
   mfentire = mfhead + mfbody + mffoot
   return mfentire
