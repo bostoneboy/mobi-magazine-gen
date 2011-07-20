@@ -15,9 +15,9 @@ elif input ==3:
 collection = "rss_" + collection
 
 post = db[collection]
-list_yes = post.find({'is_operate':'yes'}).sort('date')
-list_no = post.find({'is_operate':'no'}).sort('date')
+list_yes = post.find({'is_operate':'yes'}).sort('insert_time')
+list_no = post.find({'is_operate':'no'}).sort('insert_time')
 for i in list_yes:
-  print i['is_operate'],i['date'],i['link'],i['insert_time'],i['exception']
+  print i['is_operate'],i['date'],i['insert_time'],i['exception'],i['link']
 for j in list_no:
-  print j['is_operate'],j['date'],j['link'],j['insert_time'],j['exception']
+  print j['is_operate'],j['date'],j['insert_time'],j['exception'],j['link']

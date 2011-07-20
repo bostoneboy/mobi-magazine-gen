@@ -70,10 +70,13 @@ def downloadIMG(content,title):
     try:
       urllib.urlretrieve(img_url,img_filename)
     except:
-      print "cannot retrieve image on the server: %s" % img_url
       img_filename = ""
-    image_list.append(img_filename)
-    img_filename2 = os.path.join("images",img_filename)
+      print "cannot retrieve image on the server: %s" % img_url
+    if img_filename:
+      image_list.append(img_filename)
+      img_filename2 = os.path.join("images",img_filename)
+    else:
+      img_filename2 = ""
     content = re.sub(listt,img_filename2,content)
   dic["entire"] = content
   dic["image"] = image_list
