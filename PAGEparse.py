@@ -27,7 +27,7 @@ def pageFormat(content,pageparse_keyword):
     page_body = result.group(2)
     page = page_head + pagechapterBlank() + page_body
   except:
-    print "can not parse key content." 
+    print "can not parse key content."  # no url address marked. need to be added....... 
     page = ""
   return page
   
@@ -58,7 +58,11 @@ def downloadIMG(content,title):
   img_tab = re.findall(r'<img[\s\S]*?src="(\S+)?"',content)
   for listt in img_tab:
     if re.search(r"nbweekly",title):
-      base_url = "http://www.nbweekly.com"
+      url_prefix = re.search(r'^http',listt)
+      if url_prefix:
+        base_url = ""
+      else:
+        base_url = "http://www.nbweekly.com"
       img_url = base_url + listt
     elif re.search(r"nfpeople",title):
       base_url = "http://www.nfpeople.com"

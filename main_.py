@@ -117,7 +117,7 @@ def main():
 
     # generate the url of this week's nfpeople
     if re.search(r'nfpeople',title):
-      uri = str(int(time.strftime("%W", time.localtime())) + 9)
+      uri = str(int(time.strftime("%W", time.localtime())) + 8)
       uri = "Magazine-detail-item-" + uri + ".html"
       url += uri
     
